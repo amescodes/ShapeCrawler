@@ -3,11 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using DocumentFormat.OpenXml;
+using DocumentFormat.OpenXml.Drawing.Charts;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Presentation;
-using ShapeCrawler.Exceptions;
+using ShapeCrawler.Charts;
 using ShapeCrawler.Shared;
 using P = DocumentFormat.OpenXml.Presentation;
+using C = DocumentFormat.OpenXml.Drawing.Charts;
 
 namespace ShapeCrawler.Collections
 {
@@ -75,27 +77,43 @@ namespace ShapeCrawler.Collections
             }
             else
             {
-                var slidePart = addingSlideInner.SDKSlidePart;
-
-                // CLONE SLIDE
-                var clonedSlide = (Slide)slidePart.Slide.CloneNode(true);
-                var newSlidePart = this.presentationPart.AddNewPart<SlidePart>();
-                clonedSlide.Save(newSlidePart);
-                newSlidePart.AddPart(slidePart.SlideLayoutPart);
-
-                // APPEND SLIDE
-                var slideIdList = this.presentationPart.Presentation.SlideIdList;
-                var maxSlideId = slideIdList.ChildElements
-                    .Cast<SlideId>()
-                    .Max(x => x.Id.Value);
-                var id = maxSlideId + 1;
-                var newSlideId = new SlideId();
-                slideIdList.Append(newSlideId);
-                newSlideId.Id = id;
-                newSlideId.RelationshipId = this.presentationPart.GetIdOfPart(newSlidePart);
+                this.Duplicate(addingSlideInner);
             }
 
             this.OnCollectionChanged();
+        }
+
+        private void Duplicate(SCSlide addingSlideInner)
+        {
+            var slidePart = addingSlideInner.SDKSlidePart;
+
+            var clonedSlide = (Slide)slidePart.Slide.CloneNode(true);
+            var newSlidePart = this.presentationPart.AddNewPart<SlidePart>();
+            clonedSlide.Save(newSlidePart);
+            newSlidePart.AddPart(slidePart.SlideLayoutPart);
+
+            var slideIdList = this.presentationPart.Presentation.SlideIdList;
+            var maxSlideId = slideIdList.ChildElements
+                .Cast<SlideId>()
+                .Max(x => x.Id.Value);
+            var id = maxSlideId + 1;
+            var newSlideId = new SlideId();
+            slideIdList.Append(newSlideId);
+            newSlideId.Id = id;
+            newSlideId.RelationshipId = this.presentationPart.GetIdOfPart(newSlidePart);
+
+            // ADD CHARTS
+            foreach (var chart in addingSlideInner.Shapes.OfType<SCChart>())
+            {
+                var rId = chart.pGraphicFrame.Graphic.GraphicData.GetFirstChild<ChartReference>().Id;
+                var chartPart = (ChartPart) slidePart.GetPartById(rId);
+                var clonedChartSpace = (ChartSpace)chartPart.ChartSpace.CloneNode(true);
+                var newChartPart = newSlidePart.AddNewPart<ChartPart>();
+                var ddd = 1;
+                clonedChartSpace.Save(newChartPart);
+            }
+
+            var d = 1;
         }
 
         private void AddExternal(ISlide outerSlide, SCSlide outerInnerSlide)

@@ -54,7 +54,8 @@ namespace ShapeCrawler.Tests
         {
             // Arrange
             var pptxStream = GetTestPptxStream("charts-case003.pptx");
-            var pres = SCPresentation.Open(pptxStream, true);
+            // var pres = SCPresentation.Open(pptxStream, true);
+            var pres = SCPresentation.Open(@"c:\temp\with-chart.pptx", true);
             var originalSlidesCount = pres.Slides.Count;
             var copyingSlide = pres.Slides[0];
 
