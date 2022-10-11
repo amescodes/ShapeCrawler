@@ -453,6 +453,16 @@ namespace ShapeCrawler.Tests.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
+        internal static byte[] _053_font_offset {
+            get {
+                object obj = ResourceManager.GetObject("_053_font_offset", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
         internal static byte[] autoshape_case005_text_frame {
             get {
                 object obj = ResourceManager.GetObject("autoshape_case005_text_frame", resourceCulture);
