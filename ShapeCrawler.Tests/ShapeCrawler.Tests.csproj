@@ -51,7 +51,6 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <None Remove="Resource\001.pptx" />
-    <None Remove="Resource\053_add-superscript.pptx" />
     <None Remove="Resource\053_font-offset.pptx" />
     <None Remove="Resource\Charts\bars.pptx" />
     <EmbeddedResource Include="Resource\001.pptx" />
