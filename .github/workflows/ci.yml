@@ -1,8 +1,6 @@
 name: Build and Test
 
-on:
-  push:
-    branches: [ master, superscript-ciDebug ]
+on: push
 
 jobs:
   build:
